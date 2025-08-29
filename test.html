@@ -60,8 +60,8 @@
           // Parse the input
           const inputArray = JSON.parse(inputElement.value);
 
-          // Make the API call
-          const response = await fetch("http://localhost:3000/bfhl", {
+          // Make the API call - using relative URL since it's on the same domain
+          const response = await fetch("/bfhl", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
