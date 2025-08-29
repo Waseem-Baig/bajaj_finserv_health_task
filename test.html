@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BFHL API Test</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      textarea {
+        width: 100%;
+        height: 100px;
+        margin: 10px 0;
+      }
+      button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .result {
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 15px;
+        margin-top: 20px;
+        white-space: pre-wrap;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>BFHL API Test</h1>
+
+    <h2>Input Data (JSON Array)</h2>
+    <textarea id="inputData" placeholder='["a", "1", "334", "4", "R", "$"]'>
+["a", "1", "334", "4", "R", "$"]</textarea
+    >
+
+    <button onclick="testAPI()">Test API</button>
+
+    <h2>Response:</h2>
+    <div id="result" class="result">Click "Test API" to see the response</div>
+
+    <script>
+      async function testAPI() {
+        const inputElement = document.getElementById("inputData");
+        const resultElement = document.getElementById("result");
+
+        try {
+          // Parse the input
+          const inputArray = JSON.parse(inputElement.value);
+
+          // Make the API call
+          const response = await fetch("http://localhost:3000/bfhl", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              data: inputArray,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          resultElement.textContent = JSON.stringify(data, null, 2);
+          resultElement.style.color = "black";
+        } catch (error) {
+          resultElement.textContent = `Error: ${error.message}`;
+          resultElement.style.color = "red";
+        }
+      }
+
+      // Test examples
+      function loadExample(example) {
+        const examples = {
+          1: '["a", "1", "334", "4", "R", "$"]',
+          2: '["2", "a", "y", "4", "&", "-", "*", "5", "92", "b"]',
+          3: '["A", "ABcD", "DOE"]',
+        };
+        document.getElementById("inputData").value = examples[example];
+      }
+    </script>
+
+    <h3>Quick Test Examples:</h3>
+    <button onclick="loadExample(1)">Example A</button>
+    <button onclick="loadExample(2)">Example B</button>
+    <button onclick="loadExample(3)">Example C</button>
+  </body>
+</html>
